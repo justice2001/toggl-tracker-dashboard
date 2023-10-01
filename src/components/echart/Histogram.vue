@@ -27,11 +27,11 @@ const props = defineProps({
 watch(() => props.option.count, (v, o) => {
     const sd = props.option.startDate
     const ed = props.option.endDate
-    const diff = (new Date(ed)-new Date(sd))/(1000*60*60*24)
-    let dt = new Date(sd)
+    const diff = (new Date(ed)-new Date(sd))/(1000*60*60*24)-1
+    let dt = new Date(new Date(sd).setDate(new Date(sd).getDate() + 1))
     let xAxis = []
     for (let i = 0;i < diff;i++) {
-        xAxis.push(getDate(dt))
+        xAxis.push(getDate(dt).slice(5))
         dt = new Date(dt.setDate(dt.getDate() + 1))
     }
     console.log("XAXIS", xAxis);
@@ -44,9 +44,14 @@ watch(() => props.data, (v, o) => {
 })
 
 const option = ref({
+  title: {
+    text: "THIS WEEK",
+    subtext: 'Data From Toggl Tracker',
+    left: 'center'
+  },
   xAxis: {
     type: 'category',
-    data: ['Mon']
+    data: []
   },
   yAxis: {
     type: 'value',
@@ -58,8 +63,16 @@ const option = ref({
   },
   series: [
     {
-      data: [120],
-      type: 'bar'
+      data: [],
+      type: 'bar',
+      label: {
+        position: 'top',
+        show: true,
+        formatter: function(v) {
+          // return getTimeFormat(v.value)
+          return (v.value / 3600).toFixed(1) + "H"
+        }
+      }
     }
   ]
 })

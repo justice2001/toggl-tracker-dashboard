@@ -38,7 +38,7 @@ watch(() => props.data, (v, o) => {
 
 const option = ref({
   title: {
-    text: 'Time Tracker',
+    text: 'TODAY',
     subtext: 'Data From Toggl Tracker',
     left: 'center',
   },

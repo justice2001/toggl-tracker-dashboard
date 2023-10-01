@@ -1,20 +1,31 @@
 <template>
   <h1 style="text-align: center;">Time Tracker: Dashboard</h1>
 
-  <div class="by-selector">
-    <button @click="by('tags')">By Tags</button>
-    <button @click="by('desc')">By Description</button>
-  </div>
-
-  <div class="data-today">
-    <h2>TODAY TOTAL: {{ todayData.totalTime }}</h2>
-    <h2>TODAY HOUR: {{ todayData.timeHour.toFixed(1) }} H</h2>
-  </div>
-
   <div class="pie-group">
-    <Pie :data="todayData.byGroup" />
-    <Histogram :option="weekData.option" :data="weekData.data" />
+    <t-radio-group variant="default-filled" default-value="desc" @change="by">
+      <t-radio-button value="desc">Description</t-radio-button>
+      <t-radio-button value="tags">Tags</t-radio-button>
+    </t-radio-group>
+    <t-button  class="refresh-btn" @click="loadData">
+      <template #icon><t-icon name="refresh" /></template>
+      REFRESH
+    </t-button>
   </div>
+
+  
+
+  <t-loading text="加载中..." :loading="loading" size="small">
+    <div class="data-today">
+      <h2>TODAY TOTAL: {{ todayData.totalTime }}</h2>
+      <h2>TODAY HOUR: {{ todayData.timeHour.toFixed(1) }} H</h2>
+    </div>
+
+    <div class="pie-group">
+      <Pie :data="todayData.byGroup" />
+      <Histogram :option="weekData.option" :data="weekData.data" />
+    </div>
+  </t-loading>
+  
 
   <div class="footer">
     <p>time tracker dashboard: version 1.0</p>
@@ -25,6 +36,7 @@
 <script setup>
 import {groupByTag, groupByDescription} from './utils/groupUtils'
 import {getDate, getTimeFormat} from './utils/baseUtils'
+import {getToday, getWeek} from './utils/toggl-utils'
 
 import { ref, onMounted } from 'vue';
 import Axios from "axios"
@@ -49,13 +61,20 @@ const weekData = ref({
   data: []
 })
 
+const loading = ref(true)
+
 onMounted(() => {
   // Get Data
+  loadData()
+})
+
+const loadData = () => {
+  loading.value = true
   const email = cfg.email
   const password = cfg.password
 
   const td = new Date()
-  const sd = getDate(new Date(new Date().setDate(td.getDate())))
+  const sd = getDate(new Date(new Date().setDate(td.getDate()-7)))
   const ed = getDate(new Date(new Date().setDate(td.getDate()+1)))
 
   weekData.value.option.startDate = sd
@@ -68,7 +87,7 @@ onMounted(() => {
       "Authorization": `Basic ${window.btoa(email + ":" + password)}`
     }
   }).then(res => {
-    data = res.data
+    data = getToday(res.data)
     let dur = 0
     data.forEach(i => {
       if (i.duration > 0)
@@ -77,11 +96,12 @@ onMounted(() => {
     weekData.value.data = [dur]
     todayData.value.timeHour = dur / 3600
     todayData.value.totalTime = getTimeFormat(dur)
-    todayData.value.byGroup = groupByDescription(res.data)
+    todayData.value.byGroup = groupByDescription(data)
+    loading.value = false
+
+    weekData.value.data = getWeek(res.data)
   })
-})
-
-
+}
 
 const by = (key) => {
   switch(key) {
@@ -117,13 +137,19 @@ const by = (key) => {
 
 .pie-group {
   display: flex;
-  gap: 20px;
+  justify-content: center;
   margin: 20px;
+  position: relative;
 }
 
 .data-today {
   margin: 20px;
   display: flex;
   justify-content: space-around;
+}
+
+.refresh-btn {
+  position: absolute;
+  right: 0;
 }
 </style>
