@@ -10,10 +10,19 @@ export const getDate = (date) => {
   }
   
 export const getTimeFormat = (duration) => {
-    let hour = Math.floor(duration / 3600) >= 10 ? Math.floor(duration / 3600) : '0' + Math.floor(duration / 3600);
-    duration -= 3600 * hour;
-    let min = Math.floor(duration / 60) >= 10 ? Math.floor(duration / 60) : '0' + Math.floor(duration / 60);
-    duration -= 60 * min;
-    let sec = duration >= 10 ? duration : '0' + duration;
-    return hour + ':' + min + ':' + sec;
-  }
+  let hour = Math.floor(duration / 3600) >= 10 ? Math.floor(duration / 3600) : '0' + Math.floor(duration / 3600);
+  duration -= 3600 * hour;
+  let min = Math.floor(duration / 60) >= 10 ? Math.floor(duration / 60) : '0' + Math.floor(duration / 60);
+  duration -= 60 * min;
+  let sec = duration >= 10 ? duration : '0' + duration;
+  return hour + ':' + min + ':' + sec;
+}
+
+/**
+ * Get Formatted Time from date
+ * @param {Date} date Date
+ * @returns Time
+ */
+export const getTime = (date) => {
+  return `${date.getHours()}:${date.getMinutes()}`
+}

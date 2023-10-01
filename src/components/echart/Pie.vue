@@ -1,5 +1,8 @@
 <template>
+  <t-card class="card">
     <v-chart class="chart" :option="option" autoresize />
+  </t-card>
+    
 </template>
 
 <script setup>

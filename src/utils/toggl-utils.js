@@ -15,7 +15,8 @@ export const getWeek = toggl => {
         weekData[i] = 0
     }
     weekRaw.forEach(entire => {
-        weekData[weekMap[getDate(new Date(entire.start))]] += entire.duration
+        if (entire.duration > 0)
+            weekData[weekMap[getDate(new Date(entire.start))]] += entire.duration
     })
     return weekData
 }

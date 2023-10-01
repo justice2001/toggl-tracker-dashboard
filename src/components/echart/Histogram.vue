@@ -1,5 +1,7 @@
 <template>
+  <t-card class="card">
     <v-chart :option="option" class="histogram-chart" autoresize /> 
+  </t-card>
 </template>
 
 <script setup>
