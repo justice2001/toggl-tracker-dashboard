@@ -16,7 +16,7 @@ import {
   CalendarComponent
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { getDate } from '../../utils/baseUtils';
+import { getDate, getTime, getTimeFormat } from '../../utils/baseUtils';
 
 use([
   TitleComponent,
@@ -66,7 +66,11 @@ const option = ref({
     text: 'LEAST THREE MONTH',
     subtext: "Data from toggl tracker"
   },
-  tooltip: {},
+  tooltip: {
+    formatter: e => {
+      return "TIME: " + getTimeFormat(e.value[1])
+    }
+  },
   visualMap: {
     min: 5 * 60,
     max: 12 * 60 * 60,
