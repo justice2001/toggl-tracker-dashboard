@@ -45,6 +45,7 @@ import Histogram from './components/echart/Histogram.vue';
 import Timeline from './components/Timeline.vue'
 import cfg from '../cfg';
 import { time } from 'echarts';
+import { getEntires } from './api/toggl';
 
 let data = []
 
@@ -67,13 +68,11 @@ const loading = ref(true)
 
 onMounted(() => {
   // Get Data
-  loadData()
+  loadData(false)
 })
 
-const loadData = () => {
+const loadData = (force = true) => {
   loading.value = true
-  const email = cfg.email
-  const password = cfg.password
 
   const td = new Date()
   const sd = getDate(new Date(new Date().setDate(td.getDate() - 7)))
@@ -83,13 +82,9 @@ const loadData = () => {
   weekData.value.option.endDate = ed
   weekData.value.option.count++
 
-  Axios.get(`/api/v9/me/time_entries?start_date=${sd}&end_date=${ed}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Basic ${window.btoa(email + ":" + password)}`
-    }
-  }).then(res => {
-    data = getToday(res.data)
+  getEntires(sd, ed, force).then(dt => {
+
+    data = getToday(dt)
     // Process Today Timeline
     const todayTimeline = []
     data.forEach(i => {
@@ -112,7 +107,7 @@ const loadData = () => {
     todayData.value.byGroup = groupByDescription(data)
     loading.value = false
 
-    weekData.value.data = getWeek(res.data)
+    weekData.value.data = getWeek(dt)
   })
 }
 
