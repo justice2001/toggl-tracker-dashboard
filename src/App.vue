@@ -14,10 +14,16 @@
   </div>
 
   <t-loading text="加载中..." :loading="loading" size="small">
-    <t-card class="data-today">
-      <h2>TODAY TOTAL: {{ todayData.totalTime }}</h2>
-      <h2>TODAY HOUR: {{ todayData.timeHour.toFixed(1) }} H</h2>
-    </t-card>
+    <div class="data-l1-container">
+      <t-card class="data-today">
+        <h2>TODAY TOTAL: {{ todayData.totalTime }}</h2>
+        <h2>TODAY HOUR: {{ todayData.timeHour.toFixed(1) }} H</h2>
+      </t-card>
+      <t-card class="data-heatmap">
+        <CalenderHeatmap :data="yearData" />
+      </t-card>
+    </div>
+
 
     <div class="pie-group">
       <Pie :data="todayData.byGroup" />
@@ -46,6 +52,7 @@ import Timeline from './components/Timeline.vue'
 import cfg from '../cfg';
 import { time } from 'echarts';
 import { getEntires } from './api/toggl';
+import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 
 let data = []
 
@@ -63,6 +70,7 @@ const weekData = ref({
   },
   data: []
 })
+const yearData = ref([])
 
 const loading = ref(true)
 
@@ -75,10 +83,10 @@ const loadData = (force = true) => {
   loading.value = true
 
   const td = new Date()
-  const sd = getDate(new Date(new Date().setDate(td.getDate() - 7)))
+  const sd = getDate(new Date(new Date().setDate(td.getDate() - 90)))
   const ed = getDate(new Date(new Date().setDate(td.getDate() + 1)))
 
-  weekData.value.option.startDate = sd
+  weekData.value.option.startDate = getDate(new Date(new Date().setDate(td.getDate() - 7)))
   weekData.value.option.endDate = ed
   weekData.value.option.count++
 
@@ -107,6 +115,8 @@ const loadData = (force = true) => {
     todayData.value.byGroup = groupByDescription(data)
     loading.value = false
 
+    yearData.value = dt
+
     weekData.value.data = getWeek(dt)
   })
 }
@@ -121,6 +131,27 @@ const by = (key) => {
 </script>
 
 <style scoped>
+/* DATA L 1 */
+.data-l1-container {
+  margin: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: normal;
+}
+
+.data-l1 {
+  display: flex;
+}
+.data-today {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.data-heatmap {
+  flex: 1;
+}
+
 .by-selector {
   display: flex;
   align-items: center;
@@ -149,12 +180,6 @@ const by = (key) => {
   gap: 20px;
   margin: 20px;
   position: relative;
-}
-
-.data-today {
-  margin: 20px;
-  display: flex;
-  justify-content: space-around;
 }
 
 .refresh-btn {
