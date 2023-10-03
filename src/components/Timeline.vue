@@ -16,12 +16,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, defineProps } from 'vue';
 
-const d = [
-    {st: "12:00", ed: "12:30", name: "READ BOOK"},
-    {st: "13:00", ed: "13:10", name: "SEC"}
-]
 const props = defineProps({
     data: {
         type: Array,
@@ -50,7 +46,6 @@ watch(() => props.data, (v, o) => {
             cdi++
         }
     })
-    console.log(dt);
     colorMap.value = cm
     data.value = dt
 })

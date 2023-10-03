@@ -91,7 +91,6 @@ const loadData = (force = true) => {
   weekData.value.option.count++
 
   getEntires(sd, ed, force).then(dt => {
-
     data = getToday(dt)
     // Process Today Timeline
     const todayTimeline = []

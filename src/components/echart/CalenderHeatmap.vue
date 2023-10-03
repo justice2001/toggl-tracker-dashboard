@@ -44,14 +44,12 @@ watch(() => props.data, (v, o) => {
     calendarData.push([getDate(cursor), 0])
     cursor.setDate(cursor.getDate() + 1)
   }
-  cursor.setDate(cursor.getDate() - 1)
+  // cursor.setDate(cursor.getDate() - 1)
   range.push(getDate(cursor))
-  console.log(cursor);
   option.value.calendar.range = range
-  option.value.calendar.dayLabel.firstDay = cursor.getDay() / 7
   // Process Data
   props.data.forEach(i => {
-    const offset = calendarData.length - 1 -((cursor - new Date(getDate(new Date(i.start)))) / (1000 * 60 * 60 *24))
+    const offset = calendarData.length -((cursor - new Date(getDate(new Date(i.start)))) / (1000 * 60 * 60 *24))
     if (offset < calendarData.length) {
       calendarData[offset][1] += i.duration
     }
@@ -88,7 +86,7 @@ const option = ref({
     left: 'center',
     top: 120,
     cellSize: [13, 13],
-    range: '2023',
+    range: ['2023-07-05', '2023-10-03'],
     itemStyle: {
       borderWidth: 0.5
     },
