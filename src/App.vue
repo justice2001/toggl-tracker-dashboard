@@ -16,8 +16,13 @@
   <t-loading text="加载中..." :loading="loading" size="small">
     <div class="data-l1-container">
       <t-card class="data-today">
-        <h2>TODAY TOTAL: {{ todayData.totalTime }}</h2>
-        <h2>TODAY HOUR: {{ todayData.timeHour.toFixed(1) }} H</h2>
+        <div class="data-today-container">
+          <h2>TODAY TOTAL</h2>
+          <h1>{{ todayData.totalTime }}</h1>
+          <div class="h10"></div>
+          <h2>TODAY HOUR</h2>
+          <h1>{{ todayData.timeHour.toFixed(1) }} H</h1>
+        </div>
       </t-card>
       <t-card class="data-heatmap">
         <CalenderHeatmap :data="yearData" />
@@ -150,6 +155,7 @@ const by = (key) => {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  align-items: center;
 }
 .data-heatmap {
   flex: 1;
@@ -161,6 +167,10 @@ const by = (key) => {
   justify-content: center;
   margin: 20px;
   gap: 10px;
+}
+
+.data-today-container {
+  text-align: center;
 }
 
 .footer {

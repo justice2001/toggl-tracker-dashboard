@@ -13,3 +13,7 @@ body {
   align-items: center;
   flex: 1;
 }
+
+.h10 {
+  height: 10px;
+}

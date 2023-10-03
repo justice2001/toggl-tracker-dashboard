@@ -1,7 +1,7 @@
 <template>
     <div class="count-down-container">
         <h2>YOU ONLY HAVE</h2>
-        <h2 class="date">{{ count }} DAYS</h2>
+        <h1 class="date">{{ count }} DAYS</h1>
     </div>
 </template>
 
