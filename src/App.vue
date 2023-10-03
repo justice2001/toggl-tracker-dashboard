@@ -22,6 +22,9 @@
       <t-card class="data-heatmap">
         <CalenderHeatmap :data="yearData" />
       </t-card>
+      <t-card class="card-container">
+        <CountDown />
+      </t-card>
     </div>
 
 
@@ -53,6 +56,7 @@ import cfg from '../cfg';
 import { time } from 'echarts';
 import { getEntires } from './api/toggl';
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
+import CountDown from './components/CountDown.vue';
 
 let data = []
 
