@@ -44,12 +44,13 @@ watch(() => props.data, (v, o) => {
     calendarData.push([getDate(cursor), 0])
     cursor.setDate(cursor.getDate() + 1)
   }
+  calendarData.push([getDate(cursor), 0])
   // cursor.setDate(cursor.getDate() - 1)
   range.push(getDate(cursor))
   option.value.calendar.range = range
   // Process Data
   props.data.forEach(i => {
-    const offset = calendarData.length -((cursor - new Date(getDate(new Date(i.start)))) / (1000 * 60 * 60 *24))
+    const offset = calendarData.length -((cursor - new Date(getDate(new Date(i.start)))) / (1000 * 60 * 60 *24)) - 1
     if (offset < calendarData.length) {
       calendarData[offset][1] += i.duration
     }
