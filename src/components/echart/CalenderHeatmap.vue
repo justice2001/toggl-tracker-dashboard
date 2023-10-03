@@ -67,20 +67,24 @@ const option = ref({
   },
   tooltip: {
     formatter: e => {
-      return "TIME: " + getTimeFormat(e.value[1])
+      return "<div style=\"display: flex; flex-direction: column; align-items:center;\">" 
+          + e.value[0] + "<div>" 
+          + e.marker + getTimeFormat(e.value[1])
+          + "</div>"
+          + "</div>"
     }
   },
   visualMap: {
     min: 5 * 60,
-    max: 12 * 60 * 60,
-    type: 'piecewise',
+    max: 6 * 60 * 60,
+    type: 'continuous',
     orient: 'horizontal',
     left: 'center',
     show: false,
     top: 65,
     inRange: {
-      color: ['lightgreen', 'darkgreen'],
-      symbolSize: [30, 100]
+      color: 'green',
+      opacity: [0,1]
     }
   },
   calendar: {
@@ -88,12 +92,20 @@ const option = ref({
     top: 120,
     cellSize: [13, 13],
     range: ['2023-07-05', '2023-10-03'],
+    splitLine: {
+      lineStyle: {
+        width: 0.5
+      }
+    },
     itemStyle: {
-      borderWidth: 0.5
+      borderWidth: 0.2
     },
     dayLabel: {
         firstDay: 0,
         nameMap: 'ZH' // 从周一开始
+    },
+    monthLabel: {
+      nameMap: 'ZH',
     },
     yearLabel: { show: false }
   },
