@@ -60,7 +60,6 @@ watch(() => props.data, (v, o) => {
 
 const option = ref({
   title: {
-    top: 30,
     left: 'center',
     text: 'LEAST THREE MONTH',
     subtext: "Data from toggl tracker"
@@ -89,16 +88,20 @@ const option = ref({
   },
   calendar: {
     left: 'center',
-    top: 120,
-    cellSize: [13, 13],
+    top: 80,
+    cellSize: [20, 20],
     range: ['2023-07-05', '2023-10-03'],
     splitLine: {
       lineStyle: {
-        width: 0.5
+        width: 2,
+        color: "transparent",
+        type: 'dashed'
       }
     },
     itemStyle: {
-      borderWidth: 0.2
+      borderWidth: 2,
+      borderColor: '#ffffff',
+      color: '#eeeeee',
     },
     dayLabel: {
         firstDay: 0,
