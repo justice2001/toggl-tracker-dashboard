@@ -1,0 +1,40 @@
+image: node:16
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+build_job:
+  stage: build
+  script:
+    - yarn
+    - echo "Deploy to $SSH_ADDRESS"
+    - echo "Will deploy at $TARGET_DIR"
+    - echo "$PROJ_CONFIG" > cfg.js
+    - yarn build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: "3 days"
+
+deploy_job:
+  stage: deploy
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    # Run ssh-agent (inside the build environment)
+    - eval $(ssh-agent -s)
+    # Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - tar -czvf dist.tar.gz dist/*
+    - scp dist.tar.gz $SSH_ADDRESS:$TARGET_DIR/dist.tar.gz
+    - ssh $SSH_ADDRESS "bash -s " < scripts/deploy-target.sh $TARGET_DIR
