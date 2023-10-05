@@ -21,8 +21,23 @@ export const getTimeFormat = (duration) => {
 /**
  * Get Formatted Time from date
  * @param {Date} date Date
+ * @param {boolean} useSec Generate Second
  * @returns Time
  */
-export const getTime = (date) => {
-  return `${date.getHours()}:${date.getMinutes()}`
+export const getTime = (date, useSec=false) => {
+  let time = `${fillZero(date.getHours())}:${fillZero(date.getMinutes())}`
+  if (useSec) {
+    time += `:` + fillZero(date.getSeconds())
+  }
+  return time
+}
+
+/**
+ * Fill Zero in specified number of digits 
+ * @param {string|number} src Source String
+ * @param {number} number Number
+ * @returns Processed
+ */
+export const fillZero = (src, number=2) => {
+  return src.toString().padStart(number, "0")
 }
