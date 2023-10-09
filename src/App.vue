@@ -37,6 +37,8 @@
       <Pie :data="todayData.byGroup" />
       <Histogram :option="weekData.option" :data="weekData.data" />
     </div>
+
+    <EchartTimeLine />
   </t-loading>
 
   <Timeline :data="timeline" />
@@ -60,8 +62,10 @@ import Timeline from './components/Timeline.vue'
 import cfg from '../cfg';
 import { time } from 'echarts';
 import { getEntires } from './api/toggl';
+
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
+import EchartTimeLine from './components/EchartTimeLine.vue'
 
 let data = []
 

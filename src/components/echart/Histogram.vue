@@ -82,6 +82,6 @@ const option = ref({
 
 <style scoped>
 .histogram-chart {
-    height: 480px;
+    height: 400px;
 }
 </style>
