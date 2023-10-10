@@ -21,6 +21,25 @@ export const getWeek = toggl => {
     return weekData
 }
 
+export const getRecentDayCount = (toggl, day=7) => {
+    const weekData = []
+    const weekMap = {}
+    const sd = new Date(new Date().setDate(new Date().getDate()-day))
+    // const sd = new Date(new Date().setDate(new Date().getDate()-day - 1))
+    const ed = new Date(new Date().setDate(new Date().getDate()+1))
+    let weekRaw = betweenDate(toggl, sd, ed)
+    for (let i = 0; i< day;i++) {
+        weekMap[getDate(new Date(sd.setDate(sd.getDate()+1)))] = i
+        weekData[i] = 0
+    }
+    weekRaw.forEach(entire => {
+        if (entire.duration > 0)
+            weekData[weekMap[getDate(new Date(entire.start))]] += entire.duration
+    })
+    console.log(weekData);
+    return weekData
+}
+
 export const getWeekRaw = toogl => {
   const sd = new Date(new Date().setDate(new Date().getDate()-6))
   const ed = new Date(new Date().setDate(new Date().getDate()+1))

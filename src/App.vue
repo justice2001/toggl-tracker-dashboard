@@ -50,7 +50,7 @@
 <script setup>
 import { groupByTag, groupByDescription, groupByProject } from './utils/groupUtils'
 import { getDate, getTime, getTimeFormat } from './utils/baseUtils'
-import { getToday, getWeek } from './utils/toggl-utils'
+import { getRecentDayCount, getToday, getWeek } from './utils/toggl-utils'
 
 import { ref, onMounted } from 'vue';
 import Axios from "axios"
@@ -95,7 +95,9 @@ const loadData = (force = true) => {
   const sd = getDate(new Date(new Date().setDate(td.getDate() - 90)))
   const ed = getDate(new Date(new Date().setDate(td.getDate() + 1)))
 
-  weekData.value.option.startDate = getDate(new Date(new Date().setDate(td.getDate() - 7)))
+  const RECENT_DAY = 7
+
+  weekData.value.option.startDate = getDate(new Date(new Date().setDate(td.getDate() - RECENT_DAY)))
   weekData.value.option.endDate = ed
   weekData.value.option.count++
 
@@ -125,7 +127,8 @@ const loadData = (force = true) => {
 
     yearData.value = dt
 
-    weekData.value.data = getWeek(dt)
+    // weekData.value.data = getWeek(dt)
+    weekData.value.data = getRecentDayCount(dt, RECENT_DAY)
   })
 }
 
