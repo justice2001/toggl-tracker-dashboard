@@ -52,7 +52,8 @@ watch(() => props.data, (v, o) => {
   props.data.forEach(i => {
     const offset = calendarData.length -((cursor - new Date(getDate(new Date(i.start)))) / (1000 * 60 * 60 *24)) - 1
     if (offset < calendarData.length) {
-      calendarData[offset][1] += i.duration
+      if (i.duration > 0)
+        calendarData[offset][1] += i.duration
     }
   })
   option.value.series.data = calendarData
