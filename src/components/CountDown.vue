@@ -26,7 +26,7 @@ const startTimeInterval = () => {
 }
 
 const load = () => {
-    const target = new Date("2023-12-24")
+    const target = new Date("2023-12-23")
     const today = new Date()
     count.value = ((target-today) / (1000*60*60*24)).toFixed(0)
 
