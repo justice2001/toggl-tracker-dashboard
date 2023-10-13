@@ -36,12 +36,10 @@ watch(() => props.option.count, (v, o) => {
         xAxis.push(getDate(dt).slice(5))
         dt = new Date(dt.setDate(dt.getDate() + 1))
     }
-    console.log("XAXIS", xAxis);
     option.value.xAxis.data = xAxis
 })
 
 watch(() => props.data, (v, o) => {
-    console.log(props.data);
     option.value.series[0].data = props.data
 })
 

@@ -9,7 +9,7 @@
     </t-radio-group>
     <t-button class="refresh-btn" @click="loadData">
       <template #icon><t-icon name="refresh" /></template>
-      REFRESH
+      SYNC
     </t-button>
   </div>
 
@@ -86,6 +86,12 @@ const loading = ref(true)
 onMounted(() => {
   // Get Data
   loadData(false)
+  // Register keys to sync data
+  window.addEventListener("keydown", e => {
+    if (e.code === "KeyR") {
+      loadData()
+    }
+  })
 })
 
 const loadData = (force = true) => {

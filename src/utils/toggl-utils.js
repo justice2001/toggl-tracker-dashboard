@@ -36,7 +36,6 @@ export const getRecentDayCount = (toggl, day=7) => {
         if (entire.duration > 0)
             weekData[weekMap[getDate(new Date(entire.start))]] += entire.duration
     })
-    console.log(weekData);
     return weekData
 }
 
@@ -53,7 +52,6 @@ export const getWeekRaw = toogl => {
  * @param {Date} end 
  */
 const betweenDate = (entires, start, end = new Date(new Date(start).setDate(start.getDate()+1))) => {
-    console.log(start, end);
     const td = []
     entires.forEach(entire => {
         const dt = new Date(entire.start)

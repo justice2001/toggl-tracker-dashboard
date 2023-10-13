@@ -26,7 +26,7 @@ const props = defineProps({
     },
     timeRange: {
         type: Array,
-        required: true,
+        required: false,
         default: [7, 23]
     }
 })
@@ -50,7 +50,6 @@ watch(() => props.data, (v, o) => {
 
         const stb = ((startHour - props.timeRange[0])*4 + 1) + (startMinute / 15)
         const edb = ((endHour - props.timeRange[0])*4 + 1) + (endMinute / 15)
-        console.log(stb, edb);
         for (let i = stb; i<edb;i++) {
             dt[parseInt(i)] = {
                 name: itm.name,
