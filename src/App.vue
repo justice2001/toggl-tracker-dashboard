@@ -62,7 +62,7 @@ import { time } from 'echarts';
 import { getEntires } from './api/toggl';
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
-import { initSettings } from './utils/settings-utils';
+import { getSetting, initSettings } from './utils/settings-utils';
 
 let data = []
 
@@ -104,7 +104,7 @@ const loadData = (force = true) => {
   const sd = getDate(new Date(new Date().setDate(td.getDate() - 90)))
   const ed = getDate(new Date(new Date().setDate(td.getDate() + 1)))
 
-  const RECENT_DAY = 7
+  const RECENT_DAY = getSetting("recentDaysCount")
 
   weekData.value.option.startDate = getDate(new Date(new Date().setDate(td.getDate() - RECENT_DAY)))
   weekData.value.option.endDate = ed
