@@ -62,6 +62,7 @@ import { time } from 'echarts';
 import { getEntires } from './api/toggl';
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
+import { initSettings } from './utils/settings-utils';
 
 let data = []
 
@@ -86,6 +87,8 @@ const loading = ref(true)
 onMounted(() => {
   // Get Data
   loadData(false)
+  // Init Settings
+  initSettings()
   // Register keys to sync data
   window.addEventListener("keydown", e => {
     if (e.code === "KeyR") {
