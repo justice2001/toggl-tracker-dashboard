@@ -5,8 +5,8 @@ const SETTING_DICT = {
         default: 7
     },
     "targetDate": {
-        description: "Show Recent Days",
-        type: "string",
+        description: "Count Down Target Date",
+        type: "date",
         default: "2023-12-23"
     }
 }
@@ -80,4 +80,12 @@ export function getSettings() {
     const settingsRaw = localStorage.getItem(SETTING_KEY)
     if(!settingsRaw) return {}
     return JSON.parse(settingsRaw)
+}
+
+/**
+ * Get setting dicts
+ * @returns Setting dict
+ */
+export function getSettingsDict() {
+    return SETTING_DICT;
 }

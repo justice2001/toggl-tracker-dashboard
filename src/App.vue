@@ -41,6 +41,8 @@
 
   <Timeline :data="timeline" />
 
+  <Settings />
+
   <div class="footer">
     <p>time tracker dashboard: version 1.0</p>
     <p>Copyright time_tracker@zhengyi59 2023</p>
@@ -53,12 +55,10 @@ import { getDate, getTime, getTimeFormat } from './utils/baseUtils'
 import { getRecentDayCount, getToday, getWeek } from './utils/toggl-utils'
 
 import { ref, onMounted } from 'vue';
-import Axios from "axios"
 import Pie from './components/echart/Pie.vue';
 import Histogram from './components/echart/Histogram.vue';
 import Timeline from './components/Timeline.vue'
-import cfg from '../cfg';
-import { time } from 'echarts';
+import Settings from './components/Settings.vue';
 import { getEntires } from './api/toggl';
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
