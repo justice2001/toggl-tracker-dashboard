@@ -7,10 +7,16 @@
       <t-radio-button value="tags">Tags</t-radio-button>
       <t-radio-button value="proj">Project</t-radio-button>
     </t-radio-group>
-    <t-button class="refresh-btn" @click="loadData">
-      <template #icon><t-icon name="refresh" /></template>
-      SYNC
-    </t-button>
+    <div class="opt-btn-group" @click="settingsDialog = true">
+      <t-button>
+        <template #icon><t-icon name="setting" /></template>
+        SETTING
+      </t-button>
+      <t-button @click="loadData">
+        <template #icon><t-icon name="refresh" /></template>
+        SYNC
+      </t-button>
+    </div>
   </div>
 
   <t-loading text="加载中..." :loading="loading" size="small">
@@ -41,7 +47,7 @@
 
   <Timeline :data="timeline" />
 
-  <Settings />
+  <Settings v-model:show="settingsDialog" @saved="settingSaved" />
 
   <div class="footer">
     <p>time tracker dashboard: version 1.0</p>
@@ -66,6 +72,7 @@ import { getSetting, initSettings } from './utils/settings-utils';
 
 let data = []
 
+const settingsDialog = ref(false)
 const todayData = ref({
   totalTime: "00:00:00",
   timeHour: 0,
@@ -148,6 +155,11 @@ const by = (key) => {
     case 'proj': todayData.value.byGroup = groupByProject(data); break
   }
 }
+
+const settingSaved = () => {
+  console.log("SETTING SAVED, RELOAD PAGE")
+  location.reload()
+}
 </script>
 
 <style scoped>
@@ -207,8 +219,10 @@ const by = (key) => {
   position: relative;
 }
 
-.refresh-btn {
+.opt-btn-group {
   position: absolute;
   right: 0;
+  display: flex;
+  gap: 10px;
 }
 </style>

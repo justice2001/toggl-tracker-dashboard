@@ -1,6 +1,6 @@
 <template>
   <t-form-item :label="label">
-    <t-input-number :value="value"/>
+    <t-input-number :value="value" @change="change"/>
   </t-form-item>
 </template>
 
@@ -17,4 +17,9 @@ const props = defineProps({
     default: ''
   }
 })
+const emit = defineEmits(['update:value'])
+const change = e => {
+  emit('update:value', e)
+}
+
 </script>
