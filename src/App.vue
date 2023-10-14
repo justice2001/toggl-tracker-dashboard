@@ -18,10 +18,10 @@
       <t-card class="data-today">
         <div class="data-today-container">
           <h2>TODAY TOTAL</h2>
-          <h1>{{ todayData.totalTime }}</h1>
+          <h1>{{ todayData.totalTime }} ({{ todayData.timeHour.toFixed(1) }} H)</h1>
           <div class="h10"></div>
-          <h2>TODAY HOUR</h2>
-          <h1>{{ todayData.timeHour.toFixed(1) }} H</h1>
+          <h2>THREE MONTH TOTAL</h2>
+          <h1></h1>
         </div>
       </t-card>
       <t-card class="data-heatmap">
@@ -77,7 +77,8 @@ const weekData = ref({
     endDate: "",
     count: 0,
   },
-  data: []
+  data: [],
+  time: 0
 })
 const yearData = ref([])
 
