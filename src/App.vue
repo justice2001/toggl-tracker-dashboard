@@ -46,7 +46,7 @@
   <Settings v-model:show="settingsDialog" @saved="settingSaved" />
 
   <div class="footer">
-    <p>time tracker dashboard: version 1.3</p>
+    <p>time tracker dashboard: version 1.3(timeline chart)</p>
     <p>Copyright time_tracker@zhengyi59 2023</p>
   </div>
 </template>
