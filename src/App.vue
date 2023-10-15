@@ -22,13 +22,7 @@
   <t-loading text="加载中..." :loading="loading" size="small">
     <div class="data-l1-container">
       <t-card class="data-today">
-        <div class="data-today-container">
-          <h2>TODAY TOTAL</h2>
-          <h1>{{ todayData.totalTime }}</h1>
-          <div class="h10"></div>
-          <h2>TODAY HOUR</h2>
-          <h1>{{ todayData.timeHour.toFixed(1) }} H</h1>
-        </div>
+        <Timeboard :today-data="timeStatistics.today" :three-month-data="timeStatistics.threeMonth" />
       </t-card>
       <t-card class="data-heatmap">
         <CalenderHeatmap :data="yearData" />
@@ -50,7 +44,7 @@
   <Settings v-model:show="settingsDialog" @saved="settingSaved" />
 
   <div class="footer">
-    <p>time tracker dashboard: version 1.0</p>
+    <p>time tracker dashboard: version 1.3</p>
     <p>Copyright time_tracker@zhengyi59 2023</p>
   </div>
 </template>
@@ -58,7 +52,7 @@
 <script setup>
 import { groupByTag, groupByDescription, groupByProject } from './utils/groupUtils'
 import { getDate, getTime, getTimeFormat } from './utils/baseUtils'
-import { getRecentDayCount, getToday, getWeek } from './utils/toggl-utils'
+import {getRecentDayCount, getToday, getWeek, statisticsTime} from './utils/toggl-utils'
 
 import { ref, onMounted } from 'vue';
 import Pie from './components/echart/Pie.vue';
@@ -69,10 +63,15 @@ import { getEntires } from './api/toggl';
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
 import { getSetting, initSettings } from './utils/settings-utils';
+import Timeboard from "./components/Timeboard.vue";
 
 let data = []
 
 const settingsDialog = ref(false)
+const timeStatistics = ref({
+  today: 0,
+  threeMonth: 0
+})
 const todayData = ref({
   totalTime: "00:00:00",
   timeHour: 0,
@@ -85,7 +84,8 @@ const weekData = ref({
     endDate: "",
     count: 0,
   },
-  data: []
+  data: [],
+  time: 0
 })
 const yearData = ref([])
 
@@ -118,6 +118,7 @@ const loadData = (force = true) => {
   weekData.value.option.count++
 
   getEntires(sd, ed, force).then(dt => {
+    if (!dt) return
     data = getToday(dt)
     // Process Today Timeline
     const todayTimeline = []
@@ -145,6 +146,10 @@ const loadData = (force = true) => {
 
     // weekData.value.data = getWeek(dt)
     weekData.value.data = getRecentDayCount(dt, RECENT_DAY)
+
+    // Statistic 3 Month
+    timeStatistics.value.today = statisticsTime(data)
+    timeStatistics.value.threeMonth = statisticsTime(dt)
   })
 }
 

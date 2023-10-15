@@ -8,7 +8,7 @@ export const getDate = (date) => {
     const d = date.getDate().toString().padStart(2, "0")
     return `${y}-${m}-${d}`
   }
-  
+
 export const getTimeFormat = (duration) => {
   let hour = Math.floor(duration / 3600) >= 10 ? Math.floor(duration / 3600) : '0' + Math.floor(duration / 3600);
   duration -= 3600 * hour;
@@ -22,7 +22,7 @@ export const getTimeFormat = (duration) => {
  * Get Formatted Time from date
  * @param {Date} date Date
  * @param {boolean} useSec Generate Second
- * @returns Time
+ * @returns string
  */
 export const getTime = (date, useSec=false) => {
   let time = `${fillZero(date.getHours())}:${fillZero(date.getMinutes())}`
@@ -33,10 +33,10 @@ export const getTime = (date, useSec=false) => {
 }
 
 /**
- * Fill Zero in specified number of digits 
+ * Fill Zero in specified number of digits
  * @param {string|number} src Source String
  * @param {number} number Number
- * @returns Processed
+ * @returns string
  */
 export const fillZero = (src, number=2) => {
   return src.toString().padStart(number, "0")
