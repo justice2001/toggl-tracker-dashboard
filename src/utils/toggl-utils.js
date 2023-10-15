@@ -49,8 +49,8 @@ export const getWeekRaw = toogl => {
 /**
  * 获取时间段内的所有Entire
  * @param {Array} entires
- * @param {Date} start 
- * @param {Date} end 
+ * @param {Date} start
+ * @param {Date} end
  */
 const betweenDate = (entires, start, end = new Date(new Date(start).setDate(start.getDate()+1))) => {
     console.log(start, end);
@@ -62,4 +62,19 @@ const betweenDate = (entires, start, end = new Date(new Date(start).setDate(star
         }
     })
     return td
+}
+
+/**
+ * Statistic time total duration
+ * @param {Array} toggl data
+ * @return Total time
+ */
+export const statisticsTime = toggl => {
+    let totalTime = 0.0
+    toggl.forEach(entire => {
+        if (entire.duration > 0) {
+            totalTime += entire.duration
+        }
+    })
+    return totalTime
 }
