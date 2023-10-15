@@ -14,7 +14,6 @@ export const getEntires = (start, end, force=false) => {
     if (!force && cache && new Date() - new Date(lastUpdate) < EXPIRE_TIME) {
         console.log("LOAD IN CACHE");
         return new Promise((resolve, reject) => {
-            console.log(JSON.parse(cache));
             resolve(JSON.parse(cache))
         })
     }

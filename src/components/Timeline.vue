@@ -6,11 +6,12 @@
         </div>
     </div>
     <div class="timeline-container">
-        <div class="block" :class="{big: entity}" v-for="(entity, idx) in data" :style="{backgroundColor: entity?colorGen(colorMap[entity]):'#999'}">
+        <div class="block" :class="{big: entity}" v-for="(entity, idx) in data" :style="{backgroundColor: entity?colorGen(colorMap[entity.name]):'#999'}">
             <div class="detail" v-if="entity">
-                <span>{{ entity }}</span>
+                <div>{{ entity.start }}-{{ entity.end }}</div>
+                <div>{{ entity.name }}</div>
             </div>
-            <div class="time" v-if="idx % 4 === 0">{{ idx / 4 }}:00</div>
+            <div class="time" v-if="idx % 4 === 0">{{ (idx + timeRange[0] * 4) / 4 }}:00</div>
         </div>
     </div>
 </template>
@@ -22,12 +23,17 @@ const props = defineProps({
     data: {
         type: Array,
         required: true
+    },
+    timeRange: {
+        type: Array,
+        required: false,
+        default: [7, 23]
     }
 })
 watch(() => props.data, (v, o) => {
     const dt = []
-    for (let i = 0; i < 24*4; i++) {
-        dt.push("")
+    for (let i = props.timeRange[0]*4; i < props.timeRange[1]*4; i++) {
+        dt.push(undefined)
     }
 
     const cm = {}
@@ -36,10 +42,20 @@ watch(() => props.data, (v, o) => {
     props.data.forEach(itm => {
         const a = itm.st.split(":")
         const b = itm.ed.split(":")
-        const stb = (parseInt(a[0])*4 + 1) + (parseInt(a[1]) / 15)
-        const edb = (parseInt(b[0])*4 + 1) + (parseInt(b[1]) / 15)
+
+        const startHour = parseInt(a[0])
+        const startMinute = parseInt(a[1])
+        const endHour = parseInt(b[0])
+        const endMinute = parseInt(b[1])
+
+        const stb = ((startHour - props.timeRange[0])*4 + 1) + (startMinute / 15)
+        const edb = ((endHour - props.timeRange[0])*4 + 1) + (endMinute / 15)
         for (let i = stb; i<edb;i++) {
-            dt[parseInt(i)] = itm.name
+            dt[parseInt(i)] = {
+                name: itm.name,
+                start: itm.st,
+                end: itm.ed
+            }
         }
         if (!cm[itm.name]) {
             cm[itm.name] = cdi
@@ -67,6 +83,7 @@ onMounted(() => {
 <style scoped>
 .timeline-container {
     display: flex;
+    justify-content: center;
     padding: 20px;
     gap: 1px;
     margin-bottom: 40px;
@@ -75,6 +92,7 @@ onMounted(() => {
 .block {
     flex: 1;
     height: 20px;
+    max-width: 20px;
     background-color: #999;
     position: relative;
     z-index: 1;
@@ -90,6 +108,8 @@ onMounted(() => {
     z-index: 200;
     top: calc(100% + 3px);
     white-space: nowrap;
+    flex-direction: column;
+    align-items: center;
 }
 
 .block:nth-last-child(-n+20) .detail {
@@ -97,7 +117,7 @@ onMounted(() => {
 }
 
 .block:hover .detail {
-    display: block;
+    display: flex;
     z-index: 200;
 }
 

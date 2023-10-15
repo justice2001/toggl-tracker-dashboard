@@ -11,6 +11,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { getTime } from '../utils/baseUtils';
+import { getSetting } from '../utils/settings-utils';
 
 const count = ref(0)
 const time = ref('00:00:00')
@@ -26,7 +27,7 @@ const startTimeInterval = () => {
 }
 
 const load = () => {
-    const target = new Date("2023-12-24")
+    const target = new Date(getSetting("targetDate"))
     const today = new Date()
     count.value = ((target-today) / (1000*60*60*24)).toFixed(0)
 

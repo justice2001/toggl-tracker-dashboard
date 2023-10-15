@@ -7,22 +7,22 @@
       <t-radio-button value="tags">Tags</t-radio-button>
       <t-radio-button value="proj">Project</t-radio-button>
     </t-radio-group>
-    <t-button class="refresh-btn" @click="loadData">
-      <template #icon><t-icon name="refresh" /></template>
-      REFRESH
-    </t-button>
+    <div class="opt-btn-group" @click="settingsDialog = true">
+      <t-button>
+        <template #icon><t-icon name="setting" /></template>
+        SETTING
+      </t-button>
+      <t-button @click="loadData">
+        <template #icon><t-icon name="refresh" /></template>
+        SYNC
+      </t-button>
+    </div>
   </div>
 
   <t-loading text="加载中..." :loading="loading" size="small">
     <div class="data-l1-container">
       <t-card class="data-today">
-        <div class="data-today-container">
-          <h2>TODAY TOTAL</h2>
-          <h1>{{ todayData.totalTime }}</h1>
-          <div class="h10"></div>
-          <h2>TODAY HOUR</h2>
-          <h1>{{ todayData.timeHour.toFixed(1) }} H</h1>
-        </div>
+        <Timeboard :today-data="timeStatistics.today" :three-month-data="timeStatistics.threeMonth" />
       </t-card>
       <t-card class="data-heatmap">
         <CalenderHeatmap :data="yearData" />
@@ -43,8 +43,10 @@
 
   <Timeline :data="timeline" />
 
+  <Settings v-model:show="settingsDialog" @saved="settingSaved" />
+
   <div class="footer">
-    <p>time tracker dashboard: version 1.0</p>
+    <p>time tracker dashboard: version 1.3</p>
     <p>Copyright time_tracker@zhengyi59 2023</p>
   </div>
 </template>
@@ -52,23 +54,28 @@
 <script setup>
 import { groupByTag, groupByDescription, groupByProject } from './utils/groupUtils'
 import { getDate, getTime, getTimeFormat } from './utils/baseUtils'
-import { getToday, getWeek } from './utils/toggl-utils'
+import {getRecentDayCount, getToday, getWeek, statisticsTime} from './utils/toggl-utils'
 
 import { ref, onMounted } from 'vue';
-import Axios from "axios"
 import Pie from './components/echart/Pie.vue';
 import Histogram from './components/echart/Histogram.vue';
 import Timeline from './components/Timeline.vue'
-import cfg from '../cfg';
-import { time } from 'echarts';
+import Settings from './components/Settings.vue';
 import { getEntires } from './api/toggl';
 
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
 import EchartTimeLine from './components/EchartTimeLine.vue'
+import { getSetting, initSettings } from './utils/settings-utils';
+import Timeboard from "./components/Timeboard.vue";
 
 let data = []
 
+const settingsDialog = ref(false)
+const timeStatistics = ref({
+  today: 0,
+  threeMonth: 0
+})
 const todayData = ref({
   totalTime: "00:00:00",
   timeHour: 0,
@@ -81,7 +88,8 @@ const weekData = ref({
     endDate: "",
     count: 0,
   },
-  data: []
+  data: [],
+  time: 0
 })
 const yearData = ref([])
 
@@ -90,6 +98,14 @@ const loading = ref(true)
 onMounted(() => {
   // Get Data
   loadData(false)
+  // Init Settings
+  initSettings()
+  // Register keys to sync data
+  window.addEventListener("keydown", e => {
+    if (e.code === "KeyR") {
+      loadData()
+    }
+  })
 })
 
 const loadData = (force = true) => {
@@ -99,11 +115,14 @@ const loadData = (force = true) => {
   const sd = getDate(new Date(new Date().setDate(td.getDate() - 90)))
   const ed = getDate(new Date(new Date().setDate(td.getDate() + 1)))
 
-  weekData.value.option.startDate = getDate(new Date(new Date().setDate(td.getDate() - 7)))
+  const RECENT_DAY = getSetting("recentDaysCount")
+
+  weekData.value.option.startDate = getDate(new Date(new Date().setDate(td.getDate() - RECENT_DAY)))
   weekData.value.option.endDate = ed
   weekData.value.option.count++
 
   getEntires(sd, ed, force).then(dt => {
+    if (!dt) return
     data = getToday(dt)
     // Process Today Timeline
     const todayTimeline = []
@@ -129,7 +148,12 @@ const loadData = (force = true) => {
 
     yearData.value = dt
 
-    weekData.value.data = getWeek(dt)
+    // weekData.value.data = getWeek(dt)
+    weekData.value.data = getRecentDayCount(dt, RECENT_DAY)
+
+    // Statistic 3 Month
+    timeStatistics.value.today = statisticsTime(data)
+    timeStatistics.value.threeMonth = statisticsTime(dt)
   })
 }
 
@@ -139,6 +163,11 @@ const by = (key) => {
     case 'desc': todayData.value.byGroup = groupByDescription(data); break
     case 'proj': todayData.value.byGroup = groupByProject(data); break
   }
+}
+
+const settingSaved = () => {
+  console.log("SETTING SAVED, RELOAD PAGE")
+  location.reload()
 }
 </script>
 
@@ -199,8 +228,10 @@ const by = (key) => {
   position: relative;
 }
 
-.refresh-btn {
+.opt-btn-group {
   position: absolute;
   right: 0;
+  display: flex;
+  gap: 10px;
 }
 </style>

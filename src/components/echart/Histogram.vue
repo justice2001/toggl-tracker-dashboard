@@ -12,6 +12,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { ref, watch } from 'vue';
 import VChart, { THEME_KEY } from 'vue-echarts';
 import { getDate, getTimeFormat } from '../../utils/baseUtils';
+import { getSetting } from '../../utils/settings-utils';
 
 use([GridComponent, BarChart, CanvasRenderer])
 
@@ -36,18 +37,16 @@ watch(() => props.option.count, (v, o) => {
         xAxis.push(getDate(dt).slice(5))
         dt = new Date(dt.setDate(dt.getDate() + 1))
     }
-    console.log("XAXIS", xAxis);
     option.value.xAxis.data = xAxis
 })
 
 watch(() => props.data, (v, o) => {
-    console.log(props.data);
     option.value.series[0].data = props.data
 })
 
 const option = ref({
   title: {
-    text: "THIS WEEK",
+    text: "RECENT "+getSetting("recentDaysCount")+" DAYS",
     subtext: 'Data From Toggl Tracker',
     left: 'center'
   },
