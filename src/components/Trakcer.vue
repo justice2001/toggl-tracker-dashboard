@@ -3,16 +3,16 @@
     <t-card v-if="now.enable">
       <div class="current-tracker">
         <div class="entry">
-          <h3>语法</h3>
-          <h2>00:12:12</h2>
+          <h3>{{ now.data.description }}</h3>
+          <h2>{{ now.time }}</h2>
           <div class="tag">
             <t-icon name="tag" />
-            <span>英语</span>
+            <span>{{ now.data.tags[0] }}</span>
           </div>
         </div>
-        <t-button shape="circle" size="large">
+        <t-button shape="circle" size="large" @click="stopEntire">
           <template #icon>
-            <t-icon name="play" />
+            <t-icon name="stop" />
           </template>
         </t-button>
       </div>
@@ -40,10 +40,18 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {getCurrentTimeEntire, stopTimeEntire} from "../api/toggl.js";
+import {getTimeFormat} from "../utils/baseUtils.js";
 
+let searchTimer = -1
 const now = ref({
-  enable: true
+  enable: false,
+  timer: -1,
+  data: {
+    start: "2023-10-17T08:11:57+00:00"
+  },
+  time: "00:00:00"
 })
 const quickTracker = ref([
   {description: "语法", tag: "英语", id: 123456},
@@ -51,6 +59,51 @@ const quickTracker = ref([
   {description: "高等数学", tag: "数学", id: 1234},
   {description: "徐涛", tag: "政治", id: 1223}
 ])
+
+const stopEntire = () => {
+  const workspaceId = now.value.data.workspace_id
+  const id = now.value.data.id
+  if (workspaceId && id) {
+    stopTimeEntire(workspaceId, id).then(res => {
+      console.log(res)
+      // Disable Card
+      now.value.enable = false
+      // Clear Timer
+      clearInterval(now.value.timer)
+      now.value.timer = -1
+      // Clear Data
+      now.value.data = null
+    })
+  }
+}
+
+const currentEntireFound = () => {
+  getCurrentTimeEntire().then(d => {
+    if (d) {
+      now.value.data = d
+      now.value.enable = true
+      if (now.value.timer < 0) {
+        now.value.timer = setInterval(countTimer, 1000)
+      }
+    } else {
+      if (now.value.timer >= 0) {
+        clearInterval(now.value.timer)
+        now.value.timer = -1
+      }
+      now.value.enable = false
+    }
+  })
+}
+
+const countTimer = () => {
+  if (!now.value.enable) return
+  const time = (new Date - new Date(now.value.data.start)) / 1000
+  now.value.time = getTimeFormat(parseInt(time.toString()))
+}
+
+defineExpose({
+  currentEntireFound
+})
 </script>
 
 <style scoped>

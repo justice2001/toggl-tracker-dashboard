@@ -35,7 +35,7 @@
 
     <div class="pie-group">
       <div>
-        <Trakcer />
+        <Trakcer ref="trackerEl" />
       </div>
       <Pie :data="todayData.byGroup" />
       <Histogram :option="weekData.option" :data="weekData.data" />
@@ -70,6 +70,8 @@ import Timeboard from "./components/Timeboard.vue";
 import Trakcer from "./components/Trakcer.vue";
 
 let data = []
+
+const trackerEl = ref(null)
 
 const settingsDialog = ref(false)
 const timeStatistics = ref({
@@ -155,6 +157,9 @@ const loadData = (force = true) => {
     timeStatistics.value.today = statisticsTime(data)
     timeStatistics.value.threeMonth = statisticsTime(dt)
   })
+
+  // Get Tracker Data
+  trackerEl.value.currentEntireFound()
 }
 
 const by = (key) => {

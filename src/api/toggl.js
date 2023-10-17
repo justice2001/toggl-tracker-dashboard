@@ -34,3 +34,34 @@ export const getEntires = (start, end, force=false) => {
         })
     })
 }
+
+export const getCurrentTimeEntire = () => {
+    return new Promise((resolve, reject) => {
+        Axios.get(`/api/v9/me/time_entries/current`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${window.btoa(email + ":" + password)}`
+            }
+        }).then(res => {
+            resolve(res.data)
+        }).catch(e => {
+            reject(e)
+        })
+    })
+}
+//https://api.track.toggl.com/api/v9/workspaces/{workspace_id}/time_entries/{time_entry_id}/stop
+
+export const stopTimeEntire = (wid, entireId) => {
+    return new Promise((resolve, reject) => {
+        Axios.patch(`/api/v9/workspaces/${wid}/time_entries/${entireId}/stop`, {}, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${window.btoa(email + ":" + password)}`
+            }
+        }).then(res => {
+            resolve(res.data)
+        }).catch(e => {
+            reject(e)
+        })
+    })
+}
