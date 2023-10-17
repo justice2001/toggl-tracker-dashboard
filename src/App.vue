@@ -34,6 +34,9 @@
 
 
     <div class="pie-group">
+      <div>
+        <Trakcer />
+      </div>
       <Pie :data="todayData.byGroup" />
       <Histogram :option="weekData.option" :data="weekData.data" />
     </div>
@@ -64,6 +67,7 @@ import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
 import { getSetting, initSettings } from './utils/settings-utils';
 import Timeboard from "./components/Timeboard.vue";
+import Trakcer from "./components/Trakcer.vue";
 
 let data = []
 
