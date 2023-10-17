@@ -7,8 +7,8 @@
       <t-radio-button value="tags">Tags</t-radio-button>
       <t-radio-button value="proj">Project</t-radio-button>
     </t-radio-group>
-    <div class="opt-btn-group" @click="settingsDialog = true">
-      <t-button>
+    <div class="opt-btn-group">
+      <t-button @click="settingsDialog = true">
         <template #icon><t-icon name="setting" /></template>
         SETTING
       </t-button>
