@@ -65,3 +65,33 @@ export const stopTimeEntire = (wid, entireId) => {
         })
     })
 }
+
+export const startEntire = (entire) => {
+    return new Promise((resolve, reject) => {
+        Axios.post(`/api/v9/workspaces/${entire.workspace_id}/time_entries`, entire, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${window.btoa(email + ":" + password)}`
+            }
+        }).then(res => {
+            resolve(res.data)
+        }).catch(e => {
+            reject(e)
+        })
+    })
+}
+
+export const deleteEntire = (wid, eid) => {
+    return new Promise((resolve, reject) => {
+        Axios.delete(`/api/v9/workspaces/${wid}/time_entries/${eid}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Basic ${window.btoa(email + ":" + password)}`
+            }
+        }).then(res => {
+            resolve(res.data)
+        }).catch(e => {
+            reject(e)
+        })
+    })
+}

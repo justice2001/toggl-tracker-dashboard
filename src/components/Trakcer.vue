@@ -15,6 +15,17 @@
             <t-icon name="stop" />
           </template>
         </t-button>
+        <t-popconfirm :visible="deletePopup"
+                      theme="danger"
+                      content="Confirm to delete current runner entire?"
+                      @confirm="deleteRunning"
+                      @cancel="deletePopup = false">
+          <t-button shape="circle" size="large" @click="deletePopup = true">
+            <template #icon>
+              <t-icon name="delete" />
+            </template>
+          </t-button>
+        </t-popconfirm>
       </div>
     </t-card>
 
@@ -25,10 +36,10 @@
             <h4>{{entity.description}}</h4>
             <div class="tag">
               <t-icon name="tag" />
-              <span>{{entity.tag}}</span>
+              <span>{{entity.tags[0]}}</span>
             </div>
           </div>
-          <t-button shape="circle">
+          <t-button shape="circle" @click="startEntireHandle(entity)">
             <template #icon>
               <t-icon name="play" />
             </template>
@@ -41,8 +52,9 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {getCurrentTimeEntire, stopTimeEntire} from "../api/toggl.js";
+import {deleteEntire, getCurrentTimeEntire, startEntire, stopTimeEntire} from "../api/toggl.js";
 import {getTimeFormat} from "../utils/baseUtils.js";
+import {DialogPlugin} from "tdesign-vue-next";
 
 let searchTimer = -1
 const now = ref({
@@ -53,12 +65,14 @@ const now = ref({
   },
   time: "00:00:00"
 })
-const quickTracker = ref([
-  {description: "语法", tag: "英语", id: 123456},
-  {description: "单词", tag: "英语", id: 1212},
-  {description: "高等数学", tag: "数学", id: 1234},
-  {description: "徐涛", tag: "政治", id: 1223}
-])
+const deletePopup = ref(false)
+const props = defineProps({
+  quickTracker: {
+    type: Array,
+    default: [],
+    required: true
+  }
+})
 
 const stopEntire = () => {
   const workspaceId = now.value.data.workspace_id
@@ -66,15 +80,25 @@ const stopEntire = () => {
   if (workspaceId && id) {
     stopTimeEntire(workspaceId, id).then(res => {
       console.log(res)
-      // Disable Card
-      now.value.enable = false
-      // Clear Timer
-      clearInterval(now.value.timer)
-      now.value.timer = -1
-      // Clear Data
-      now.value.data = null
+      clearRunning()
     })
   }
+}
+
+/**
+ * Start entire
+ * @param {Object} entire entire obj
+ */
+const startEntireHandle = entire => {
+  entire.start = new Date().toISOString()
+  entire.stop = null
+  entire.duration = -1
+  entire.at = new Date().toISOString()
+  entire.created_with = new Date().toISOString()
+  console.log(entire)
+  startEntire(entire).then(res => {
+    currentEntireFound()
+  })
 }
 
 const currentEntireFound = () => {
@@ -87,10 +111,8 @@ const currentEntireFound = () => {
       }
     } else {
       if (now.value.timer >= 0) {
-        clearInterval(now.value.timer)
-        now.value.timer = -1
+        clearRunning()
       }
-      now.value.enable = false
     }
   })
 }
@@ -99,6 +121,29 @@ const countTimer = () => {
   if (!now.value.enable) return
   const time = (new Date - new Date(now.value.data.start)) / 1000
   now.value.time = getTimeFormat(parseInt(time.toString()))
+}
+
+const clearRunning = () => {
+  // Disable Card
+  now.value.enable = false
+  // Clear Timer
+  if (now.value.timer >= 0) {
+    clearInterval(now.value.timer)
+    now.value.timer = -1
+  }
+  // Clear Data
+  now.value.data = null
+}
+
+const deleteRunning = () => {
+  const workspaceId = now.value.data.workspace_id
+  const id = now.value.data.id
+  if (workspaceId && id) {
+    deleteEntire(workspaceId, id).then(res => {
+      console.log(res)
+      clearRunning()
+    })
+  }
 }
 
 defineExpose({
@@ -118,6 +163,7 @@ defineExpose({
 .current-tracker {
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 
 .current-tracker .entry {

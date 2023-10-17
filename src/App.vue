@@ -35,7 +35,7 @@
 
     <div class="pie-group">
       <div>
-        <Trakcer ref="trackerEl" />
+        <Trakcer :quick-tracker="suggestRun" ref="trackerEl" />
       </div>
       <Pie :data="todayData.byGroup" />
       <Histogram :option="weekData.option" :data="weekData.data" />
@@ -55,14 +55,14 @@
 <script setup>
 import { groupByTag, groupByDescription, groupByProject } from './utils/groupUtils'
 import { getDate, getTime, getTimeFormat } from './utils/baseUtils'
-import {getRecentDayCount, getToday, getWeek, statisticsTime} from './utils/toggl-utils'
+import {getAllEntire, getRecentDayCount, getToday, getWeek, statisticsTime} from './utils/toggl-utils'
 
 import { ref, onMounted } from 'vue';
 import Pie from './components/echart/Pie.vue';
 import Histogram from './components/echart/Histogram.vue';
 import Timeline from './components/Timeline.vue'
 import Settings from './components/Settings.vue';
-import { getEntires } from './api/toggl';
+import {getEntires} from './api/toggl';
 import CalenderHeatmap from './components/echart/CalenderHeatmap.vue';
 import CountDown from './components/CountDown.vue';
 import { getSetting, initSettings } from './utils/settings-utils';
@@ -96,6 +96,7 @@ const weekData = ref({
 const yearData = ref([])
 
 const loading = ref(true)
+const suggestRun = ref([])
 
 onMounted(() => {
   // Get Data
@@ -156,6 +157,8 @@ const loadData = (force = true) => {
     // Statistic 3 Month
     timeStatistics.value.today = statisticsTime(data)
     timeStatistics.value.threeMonth = statisticsTime(dt)
+
+    suggestRun.value = getAllEntire(dt)
   })
 
   // Get Tracker Data

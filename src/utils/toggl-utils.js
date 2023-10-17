@@ -76,3 +76,19 @@ export const statisticsTime = toggl => {
     })
     return totalTime
 }
+
+/**
+ * Get all entire that can start
+ * @param data
+ */
+export const getAllEntire = data => {
+    const entireSign = []
+    const entire = []
+    data.forEach(dt => {
+        if (!entireSign.includes(dt.description)) {
+            entireSign.push(dt.description)
+            entire.push(dt)
+        }
+    })
+    return entire
+}
