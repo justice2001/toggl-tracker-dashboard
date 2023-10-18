@@ -74,6 +74,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['stop'])
+
 const stopEntire = () => {
   const workspaceId = now.value.data.workspace_id
   const id = now.value.data.id
@@ -83,6 +85,7 @@ const stopEntire = () => {
       clearRunning()
     })
   }
+  emit("stop")
 }
 
 /**
@@ -144,6 +147,7 @@ const deleteRunning = () => {
       clearRunning()
     })
   }
+  emit("stop")
 }
 
 defineExpose({

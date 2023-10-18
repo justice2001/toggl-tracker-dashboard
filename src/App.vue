@@ -35,7 +35,7 @@
 
     <div class="pie-group">
       <div>
-        <Trakcer :quick-tracker="suggestRun" ref="trackerEl" />
+        <Trakcer :quick-tracker="suggestRun" ref="trackerEl" @stop="loadData" />
       </div>
       <Pie :data="todayData.byGroup" />
       <Histogram :option="weekData.option" :data="weekData.data" />
