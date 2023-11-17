@@ -81,11 +81,10 @@ const stopEntire = () => {
   const id = now.value.data.id
   if (workspaceId && id) {
     stopTimeEntire(workspaceId, id).then(res => {
-      console.log(res)
       clearRunning()
+      emit("stop")
     })
   }
-  emit("stop")
 }
 
 /**
